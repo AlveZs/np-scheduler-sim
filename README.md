@@ -10,6 +10,10 @@ Para executar o projeto, rode o comando:
 ```
 python3 main.py
 ```
+
+# Arquivos de testes
+
+Os arquivos contendo os conjuntos de tarefas devem estar na pasta tasksets
 # Formato do arquivo
 
 ## Primeira linha  
