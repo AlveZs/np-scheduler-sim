@@ -14,7 +14,7 @@ def tasksetInfo(processorsNumber, tasks):
         ))
         totalUtilization = totalUtilization + taskUtilization
     print("=========================================\n")
-    print("Utilizacao total do sistema: ", round(totalUtilization / processorsNumber, 2))
+    print("Utilizacao total do sistema: ", round(totalUtilization / processorsNumber, 4))
 
 
 def loadDataFromFile(filename):

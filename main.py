@@ -1,5 +1,6 @@
 from offlineProcedure import OfflineProcedure
 from fileReader import loadDataFromFile
+from colors import bcolors
 import os
 
 directory = 'tasksets'
@@ -10,8 +11,7 @@ for filename in os.scandir(directory):
         processorsNumber, tasks = loadDataFromFile(filename.path)
         try:
             OfflineProcedure(tasks, processorsNumber)
-            print("\n\n")
         except ValueError as err:
-            message, assigments = err.args
-            print(message)
-            print(assigments)
+            message = err.args[0]
+            print(bcolors.FAIL + message + bcolors.ENDC)
+        print("\n\n")

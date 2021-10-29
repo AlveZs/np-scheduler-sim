@@ -1,6 +1,7 @@
 from task import Task
 import sys
 import math
+from colors import bcolors
 
 class OfflineProcedure:
     def __init__(self, tasks, processorsNumber):
@@ -67,8 +68,10 @@ class OfflineProcedure:
                 self.unassignedTasksExist = False
             if (self.taskAssigned[i] == -1):
                 self.firstTaskUnassigned = i
+                break
         
         if (self.unassignedTasksExist):
+            print(bcolors.OKBLUE + "NP(s) necessario(s)\n" + bcolors.ENDC)
             # stage 2
             S = tasks[0].deadline
             for i in range(tasksNumber):
@@ -119,8 +122,11 @@ class OfflineProcedure:
                     else:
                         currentProcessor = currentProcessor + 1
                 if (self.taskAssigned[i] == -1):
-                    raise ValueError("Não foi possível alocar a tarefa {}".format(tasks[i].name), self.taskAssigned)
+                    raise ValueError("Não foi possível alocar a tarefa {}".format(tasks[i].name))
 
-        print("Tarefas alocadas com sucesso\n")
-        self.displayInfo(a, h, processorsNumberPrime)
+            self.displayInfo(a, h, processorsNumberPrime)
+        print(bcolors.OKGREEN + "Tarefas alocadas com sucesso\n" + bcolors.ENDC)
+        print("Atribuicoes:")
+        for i in range(tasksNumber):
+            print("{} => Proc {}:".format(self.tasks[i].name, self.taskAssigned[i]))
         return 1

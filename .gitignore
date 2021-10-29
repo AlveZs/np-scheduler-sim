@@ -146,5 +146,5 @@ cython_debug/
 .vscode
 
 *.bak
-
+tasksets
 # End of https://www.toptal.com/developers/gitignore/api/python
