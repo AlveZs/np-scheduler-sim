@@ -29,7 +29,21 @@ class OfflineProcedure:
             self.processorsUtilization.append(0.0)
     
     def reindexTasksInHFOrder(self):
-        return self.tasks.sort(key=lambda task: (task.executionTime / task.deadline), reverse = True)   
+        return self.tasks.sort(key=lambda task: (task.executionTime / task.deadline), reverse = True)
+    
+    def displayInfo(self, a, h, processorsNumberPrime):
+        print("Quantidade de NP: ",processorsNumberPrime)
+        for i in range(processorsNumberPrime + 1):
+            print("=========================================")
+            print("NP: ", i+1)
+            print("a: ", a[i])
+            print("h: ", h[i])
+            print("=========================================")
+        print("Capacidade dos processadores", self.processorsCaps)
+        print("Utilizacao dos processadores", self.processorsUtilization)
+        print("Reservas", self.procsExec)
+        print("Offsets", self.offsets)
+        print("Atribuicoes", self.taskAssigned)
 
     def taskAssigment(self, processorsNumber, tasksNumber, tasks):
         # stage 1
@@ -65,13 +79,13 @@ class OfflineProcedure:
                 self.procsExec[p] = self.inflate(self.processorsUtilization[p]) * S
                 self.notionalCap = self.notionalCap + (1 - (self.procsExec[p] / S))
             for p in range(processorsNumber-1):
-                self.offsets[p+1] = round(self.offsets[p] + S - self.procsExec[p], 2)
+                self.offsets[p+1] = self.offsets[p] + S - self.procsExec[p]
             
-            processorsNumberPrime = math.floor(round(self.notionalCap, 2))
+            processorsNumberPrime = math.floor(round(self.notionalCap, 4))
             self.enlargeArraysUandAandCAPby(processorsNumber + processorsNumberPrime + 1)
             for p in range (processorsNumber, processorsNumber + processorsNumberPrime):
                 self.processorsCaps.append(1); #full-capacity notional CPU
-            self.processorsCaps.append(self.deflate(round(self.notionalCap, 2)) - processorsNumberPrime)
+            self.processorsCaps.append(self.deflate(round(self.notionalCap, 4)) - processorsNumberPrime)
 
             a = [[None for i in range(processorsNumber + 1)] for j in range(processorsNumber, processorsNumber + processorsNumberPrime+1)]
             h  = [[None for i in range(processorsNumber)] for j in range(processorsNumber, processorsNumber + processorsNumberPrime+1)]
@@ -79,16 +93,16 @@ class OfflineProcedure:
             currentProcessor = 0
 
             # now create notional CPUs
-            for p in range(processorsNumber, (processorsNumber - 1) + processorsNumberPrime + 1):
+            for p in range(processorsNumber, processorsNumber  + processorsNumberPrime + 1):
                 pIndex = p - processorsNumber
                 stop = False
                 a[pIndex][0] = 0
                 r = 1
                 while (stop == False):
-                    end = round(S * self.inflate(self.processorsCaps[p]), 2)
-                    a[pIndex][r] = min(round(a[pIndex][r-1] + S - self.procsExec[currentProcessor], 2), end)
+                    end = S * self.inflate(self.processorsCaps[p])
+                    a[pIndex][r] = min(a[pIndex][r-1] + S - self.procsExec[currentProcessor], end)
                     h[pIndex][r-1] = currentProcessor
-                    if (a[pIndex][r] == end):
+                    if (round(a[pIndex][r], 4) == round(end, 4)):
                         stop = True
                     else:
                         r = r+1
@@ -96,7 +110,7 @@ class OfflineProcedure:
 
             for i in range(self.firstTaskUnassigned, tasksNumber):
                 currentProcessor = processorsNumber
-                while (currentProcessor <= processorsNumber + processorsNumberPrime + 1):
+                while (currentProcessor <= processorsNumber + processorsNumberPrime):
                     taskUtilization = tasks[i].executionTime / tasks[i].deadline
                     if (self.processorsUtilization[currentProcessor] + taskUtilization <= self.processorsCaps[currentProcessor]):
                         self.taskAssigned[i] = currentProcessor;
@@ -105,8 +119,8 @@ class OfflineProcedure:
                     else:
                         currentProcessor = currentProcessor + 1
                 if (self.taskAssigned[i] == -1):
-                    sys.exit("Nao foi possivel alocar todas as tarefas")
-                    return 0
+                    raise ValueError("Não foi possível alocar a tarefa {}".format(tasks[i].name), self.taskAssigned)
 
-        print("Tarefas alocadas com sucesso")
+        print("Tarefas alocadas com sucesso\n")
+        self.displayInfo(a, h, processorsNumberPrime)
         return 1
