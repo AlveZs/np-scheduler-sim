@@ -17,7 +17,6 @@ class OfflineProcedure:
         self.notionalCap = 0
         self.offsets = [0] * self.processorsNumber
         self.procsExec = [0.0] * self.processorsNumber
-        self.taskAssigment(self.processorsNumber, self.tasksNumber, self.tasks)
 
     def inflate(self, U):
         return (2*U) / (1+U)
@@ -46,7 +45,10 @@ class OfflineProcedure:
         print("Offsets", self.offsets)
         print("Atribuicoes", self.taskAssigned)
 
-    def taskAssigment(self, processorsNumber, tasksNumber, tasks):
+    def taskAssigment(self):
+        processorsNumber = self.processorsNumber
+        tasksNumber = self.tasksNumber
+        tasks = self.tasks
         # stage 1
         self.reindexTasksInHFOrder()
         for p in range(processorsNumber):
@@ -70,6 +72,11 @@ class OfflineProcedure:
                 self.firstTaskUnassigned = i
                 break
         
+        processorsNumberPrime = 0
+        a = None
+        h = None
+        S = 0
+
         if (self.unassignedTasksExist):
             print(bcolors.OKBLUE + "NP(s) necessario(s)\n" + bcolors.ENDC)
             # stage 2
@@ -129,4 +136,5 @@ class OfflineProcedure:
         print("Atribuicoes:")
         for i in range(tasksNumber):
             print("{} => Proc {}:".format(self.tasks[i].name, self.taskAssigned[i]))
-        return 1
+
+        return processorsNumberPrime, tasks, a, h, S, self.taskAssigned
