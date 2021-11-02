@@ -15,6 +15,8 @@ class Scheduler:
             h,
             S,
             assignedTasks,
+            offsets,
+            procsExec
         ):
         self.processors = []
         for i in range(processorsNumber + processorsNumberPrime):
@@ -30,6 +32,8 @@ class Scheduler:
         self.assignedTasks = assignedTasks
         self.nextJobArrival = 0
         self.agenda = []
+        self.offsets =offsets
+        self.procsExec = procsExec
         self.initializeAgenda()
         self.schedule(S, processorsNumber, processorsNumberPrime)
 
@@ -110,7 +114,7 @@ class Scheduler:
                         stayIdle = True
                         for np in range(processorsNumber, processorsNumber + processorsNumberPrime):
                             npIndex = np - processorsNumber
-                            for r in range(len(self.a[np])-2):
+                            for r in range(len(self.a[npIndex])-2):
                                 if ((self.a[npIndex][r] <= self.t) and (self.t < self.a[npIndex][r+1])):
                                     break
                             if (self.h[npIndex][r] == processor):

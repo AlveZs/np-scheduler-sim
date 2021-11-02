@@ -129,7 +129,7 @@ class OfflineProcedure:
                     else:
                         currentProcessor = currentProcessor + 1
                 if (self.taskAssigned[i] == -1):
-                    raise ValueError("Não foi possível alocar a tarefa {}".format(tasks[i].name))
+                    raise ValueError("Nao foi possivel alocar a tarefa {}".format(tasks[i].name))
 
             self.displayInfo(a, h, processorsNumberPrime)
         print(bcolors.OKGREEN + "Tarefas alocadas com sucesso\n" + bcolors.ENDC)
@@ -137,4 +137,4 @@ class OfflineProcedure:
         for i in range(tasksNumber):
             print("{} => Proc {}:".format(self.tasks[i].name, self.taskAssigned[i]))
 
-        return processorsNumberPrime, tasks, a, h, S, self.taskAssigned
+        return processorsNumberPrime, tasks, a, h, S, self.taskAssigned, self.offsets, self.procsExec

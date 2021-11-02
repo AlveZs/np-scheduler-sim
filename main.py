@@ -11,14 +11,25 @@ for filename in os.scandir(directory):
         print(filename.path)
         processorsNumber, tasks = loadDataFromFile(filename.path)
         try:
-            processorsNumberPrime, tasksOff, a, h, S, assignedTasks = OfflineProcedure(tasks, processorsNumber).taskAssigment()
+            (
+                processorsNumberPrime,
+                tasksOff,
+                a,
+                h,
+                S,
+                assignedTasks,
+                offsets,
+                procsExec
+            ) = OfflineProcedure(tasks, processorsNumber).taskAssigment()
             Scheduler(
                 processorsNumber,
                 processorsNumberPrime,
                 tasksOff,
                 a,h,
                 S,
-                assignedTasks
+                assignedTasks,
+                offsets,
+                procsExec
             )
         except ValueError as err:
             message = err.args[0]
